@@ -1,11 +1,11 @@
 <template>
   <div class="flex h-full">
-    <div class="w-1/5 border-r bg-gray-200">
-      <!-- <div class="pt-8 p-2">
-        <div class="text-gray-900">Roster</div>
-      </div> -->
+    <div class="w-1/4 border-r-8 border-gray-200 bg-white">
+      <div class="bg-white pt-8 p-2">
+        <div class="text-xl text-gray-900">Roster</div>
+      </div>
       <div>
-        <div class="bg-white flex items-center justify-between p-2 border-b">
+        <div class="bg-white flex items-center justify-between p-2 border-b border-gray-200">
           <div class="flex items-center">
             <div class="mr-2">
               <input 
@@ -34,7 +34,7 @@
         <div 
           v-for="user in sortedRoster" 
           :key="user.uid"
-          class="bg-white shadow-sm p-2 border-b hover:bg-gray-100 cursor-pointer"
+          class="bg-white p-2 border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
           v-on:mouseover="mouseover_uid = user.uid"
           v-on:mouseleave="mouseover_uid = null"
         >
@@ -62,7 +62,10 @@
         </div>
       </div>
     </div>
-    <div class="w-4/5 p-8">
+    <div class="w-3/4 p-8">
+      <div class="bg-white">
+        <div class="text-xl text-gray-900">Schedule</div>
+      </div>
       <!-- <div class="text-gray-900">Schedule</div>
       <div class="mt-10">
         <button class="border px-2 py-1 font-semibold rounded-md shadow-sm text-xs text-gray-800">Show heatmap</button>
@@ -74,7 +77,7 @@
             <th 
               v-for="(arr, day) in days" 
               :key="`th_${day}`"
-              class="border-b pb-1"
+              class="border-b border-gray-200 pb-1"
             >
               <span>{{ day | formatDay }}</span>
             </th>
@@ -83,7 +86,6 @@
             <tr
               v-for="(days, hour) in schedule" 
               :key="`hour_${hour}`" 
-              class="hover:bg-gray-1000"
             >
               <td class="p-1">
                 <span>{{ hour | formatHour }}</span>
@@ -93,14 +95,16 @@
               <td 
                 v-for="(data, day) in days" 
                 :key="`hour_${hour}_${day}`" 
-                class="border leading-none p-1 text-gray-800 text-center"
+                class="border border-gray-200 leading-none p-1 text-gray-800 text-center"
                 :style="{ backgroundColor: (Object.keys(data).indexOf(mouseover_uid) !== -1) ? heatmapHighlight : '#fff' }"
               >
                 <div class="bg-white">
                   <div 
                     class="p-2"
                     :style="{ 'background-color': `rgba(${heatmapColor},${heatmapWeight(Object.values(data).length)})` }"
-                  >{{ Object.values(data).length }}</div>
+                  >
+                    <span class="opacity-75">{{ Object.values(data).length }}</span>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -122,11 +126,11 @@ import { range, spread } from '@/utils/helpers'
 const config = {
   heatmap: {
     color: {
-      r: 0,
-      g: 100,
-      b: 250
+      r: 108,
+      g: 189,
+      b: 72
     },
-    highlight: 'rgb(114, 152, 225)',
+    highlight: 'rgba(108, 189, 72, 1)',
     weights: {
       in_min: 0,
       in_max: 10,
