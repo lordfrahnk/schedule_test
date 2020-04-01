@@ -108,6 +108,20 @@
                 </div>
               </td>
             </tr>
+            <tr v-show="active_uids.length === 1">
+              <td>{{ selectedUser.name }}</td>
+              <td
+                v-for="(arr, day) in days"
+                :key="`form_${day}`"
+                >
+                  <input
+                  type="text" 
+                  class="border" 
+                  placeholder="8-10"
+                  v-model="selectedUser.schedule[day]"
+                  >
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -258,6 +272,17 @@ export default {
       })
 
       return schedule;
+    },
+
+    selectedUser () {
+
+      if (this.active_uids.length === 1) {
+      const active_uid = this.active_uids[0]
+      return this.roster.filter(user => user.uid === active_uid)[0]
+    }
+    else {
+      return this.roster[0]
+      }
     }
   },
 
