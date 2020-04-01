@@ -108,6 +108,20 @@
                 </div>
               </td>
             </tr>
+            <tr class="border-t-2" v-show="active_uids.length === 1">
+              <td class="py-6 font-bold">{{ selectedUser.name }}</td>
+              <td
+                v-for="(arr, day) in days"
+                :key="`form_${day}`"
+              >
+                <input 
+                  type="text" 
+                  class="border p-1 inline-block w-full" 
+                  placeholder="8-10"
+                  v-model="selectedUser.schedule[`${day}`]"
+                >
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -119,6 +133,7 @@
 import Vue from 'vue'
 import dayjs from 'dayjs'
 import { range, spread } from '@/utils/helpers'
+import rosterData from '@/store/roster.json'
 
 /**
  * Change these values whenever
@@ -161,27 +176,7 @@ export default {
       mouseover_uid: null,
 
       roster: [
-        {
-          uid: 'taylorfranklin',
-          name: 'Taylor Franklin',
-          schedule: {
-            ...this.emptyUserSchedule(),
-            '0': '8-9',
-            '1': '9-17',
-            '2': '9-17',
-            '3': '9-17',
-            '4': '9-17',
-            '5': '9-17'
-          }
-        },
-        {
-          uid: 'lebraunpremo',
-          name: 'LeBraun Premo',
-          schedule: {
-            ...this.emptyUserSchedule(),
-            '1': '14-16'
-          }
-        }
+        ...rosterData
       ],
 
       selectAll: false
@@ -224,11 +219,6 @@ export default {
       return config.heatmap.highlight
     },
 
-    // '8': {
-    //   '0': {
-    //     'taylorfranklin': 1
-    //   },
-    // }
     schedule () {
       // Build an empty schedule for the view to loop through and create the table
       const schedule = {
@@ -242,7 +232,8 @@ export default {
         // Loop through each day in the user's schedule
         Object.keys(user.schedule).forEach(day => {
           // Convert the day's hours string as an array where position "0" is the start time and  position "1" is the end time
-          // e.g. ('8-10') becomes ['8', '10']
+          // e.g. '8-10' becomes ['8', '10'] 
+          // e.g. '' becomes []
           const hoursArr = user.schedule[day].split('-')
           // Only continue if the array contains data
           if (hoursArr.length > 0) {
@@ -258,6 +249,16 @@ export default {
       })
 
       return schedule;
+    },
+
+    selectedUser () {
+      if (this.active_uids.length === 1) {
+        const active_uid = this.active_uids[0]
+        return this.roster.filter(user => user.uid === active_uid)[0]
+      }
+      else {
+        return this.roster[0]
+      }
     }
   },
 

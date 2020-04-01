@@ -1,0 +1,28 @@
+[
+  {
+    "uid": "taylorfranklin",
+    "name": "Taylor Franklin",
+    "schedule": {
+      "0": "8-12",
+      "1": "",
+      "2": "",
+      "3": "",
+      "4": "",
+      "5": "",
+      "6": ""
+    }
+  },
+  {
+    "uid": "lebraunpremo",
+    "name": "LeBraun Premo",
+    "schedule": {
+      "0": "",
+      "1": "",
+      "2": "",
+      "3": "",
+      "4": "",
+      "5": "",
+      "6": ""
+    }
+  }
+]
