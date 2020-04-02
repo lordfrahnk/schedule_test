@@ -380,10 +380,23 @@ export default {
           if (hoursArr.length > 1) {
             // Convert start and end time to a range of hours
             
-            const startTime = this.parseTime(hoursArr[0])
-            const endTime = this.parseTime(hoursArr[1])
-            const hours = range(startTime, endTime)
-            return hours.length
+            const startTime = this.parseTime(hoursArr[0], false)
+            const endTime = this.parseTime(hoursArr[1], true)
+            const hours = range(startTime, endTime)// => 8, 9 , 10, 11, 12, 1
+
+            let totalHours = hours.length
+
+            if (hoursArr[0].match(/:30/)) {
+              // if start time has a "":30"
+              totalHours -= 0.5
+            }
+
+            if (hoursArr[1].match(/:30/)) {
+              // if end time has a "":30"
+              totalHours -= 0.5
+            }
+
+            return totalHours
           }
           else {
             return 0
