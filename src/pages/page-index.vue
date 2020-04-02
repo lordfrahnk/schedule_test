@@ -1,6 +1,6 @@
 <template>
   <div class="flex h-full">
-    <div class="w-1/4 border-r-8 border-gray-200 bg-white">
+    <div class="w-1/4 overflow-scroll h-full border-r-8 border-gray-200 bg-white">
       <div class="bg-white pt-8 p-2">
         <div class="text-xl text-gray-900">Roster</div>
       </div>
@@ -89,8 +89,8 @@
             >
               <td class="p-1">
                 <span>{{ hour | formatHour }}</span>
-                <span>-</span>
-                <span>{{ (parseInt(hour) + 1) | formatHour }}</span>
+                <!-- <span>-</span> -->
+                <!-- <span>{{ (parseInt(hour) + 1) | formatHour }}</span> -->
               </td>
               <td 
                 v-for="(data, day) in days" 
@@ -103,7 +103,7 @@
                     class="p-2"
                     :style="{ 'background-color': `rgba(${heatmapColor},${heatmapWeight(Object.values(data).length)})` }"
                   >
-                    <span class="opacity-75">{{ Object.values(data).length }}</span>
+                    <span class="opacity-75">{{ Object.values(data).length > 0 ? Object.values(data).reduce((acc, num) => acc + num) : 0 }}</span>
                   </div>
                 </div>
               </td>
@@ -145,18 +145,18 @@ const config = {
       g: 189,
       b: 72
     },
-    highlight: 'rgba(108, 189, 72, 1)',
+    highlight: 'rgba(0, 0, 0, 1)',
     weights: {
       in_min: 0,
-      in_max: 10,
+      in_max: 20,
       out_min: 0,
       out_max: 1,
     }
   },
 
   schedule: {
-    start_time: 8,
-    end_time: 21
+    start_time: 6,
+    end_time: 23
   }
 }
 
@@ -236,14 +236,30 @@ export default {
           // e.g. '' becomes []
           const hoursArr = user.schedule[day].split('-')
           // Only continue if the array contains data
-          if (hoursArr.length > 0) {
+          if (hoursArr.length > 1) {
             // Convert start and end time to a range of hours
-            const hours = range(hoursArr[0], hoursArr[1])
+            const startTime = this.parseTime(hoursArr[0], false)
+            const endTime = this.parseTime(hoursArr[1], true)
+            const hours = range(startTime, endTime) // 6, 6 
+
+            // const s = '6:30am' => 6 should return 6
+            // const e = '7:00am' => 7 should return 6
+
             // Loop through hours
             hours.forEach(hour => {
               // Normalize the user's hours as the schedule pbject expects
               schedule[hour][day][user.uid] = 1
             })
+
+            if (hoursArr[0].match(/:30/)) {
+              // if start time has a "":30"
+              schedule[startTime][day][user.uid] = 0.5
+            }
+
+            if (hoursArr[1].match(/:30/)) {
+              // if end time has a "":30"
+              schedule[endTime][day][user.uid] = 0.5
+            }
           }
         })
       })
@@ -340,13 +356,38 @@ export default {
       this.form.name = ''
     },
 
+    parseTime(time, isEndTime=true) {
+      const timeParts = time.split(':');
+      
+      let timeInteger = parseInt(timeParts[0])
+
+      if (isEndTime && !time.match(/:30/)) {
+        timeInteger -= 1
+      }
+
+      if (timeInteger !== 12 && timeParts[1].match(/pm/)) {
+        timeInteger += 12
+      }
+
+      return timeInteger
+    },
+
     workingHours (schedule) {
       return Object.keys(schedule)
         .map(day => {
           const hoursArr = schedule[day].split('-')
-          // Convert start and end time to a range of hours
-          const hours = range(hoursArr[0], hoursArr[1])
-          return hours.length
+
+          if (hoursArr.length > 1) {
+            // Convert start and end time to a range of hours
+            
+            const startTime = this.parseTime(hoursArr[0])
+            const endTime = this.parseTime(hoursArr[1])
+            const hours = range(startTime, endTime)
+            return hours.length
+          }
+          else {
+            return 0
+          }
         })
         .reduce((acc, num) => acc + num)
     }
