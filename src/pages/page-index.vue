@@ -361,12 +361,12 @@ export default {
       
       let timeInteger = parseInt(timeParts[0])
 
-      if (isEndTime && !time.match(/:30/)) {
-        timeInteger -= 1
-      }
-
       if (timeInteger !== 12 && timeParts[1].match(/pm/)) {
         timeInteger += 12
+      }
+
+      if (isEndTime && !time.match(/:30/)) {
+        timeInteger -= 1
       }
 
       return timeInteger
