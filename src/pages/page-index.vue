@@ -65,6 +65,8 @@
     <div class="w-3/4 p-8">
       <div class="bg-white">
         <div class="text-xl text-gray-900">Schedule</div>
+        <button @click="firebaseSeed">Seed</button>
+        <button @click="firebaseUpdate">Save</button>
       </div>
       <!-- <div class="text-gray-900">Schedule</div>
       <div class="mt-10">
@@ -132,6 +134,7 @@
 <script>
 import Vue from 'vue'
 import dayjs from 'dayjs'
+import { db } from '@/utils/firebase-config'
 import { range, spread } from '@/utils/helpers'
 import rosterData from '@/store/roster.json'
 
@@ -292,7 +295,42 @@ export default {
     }
   },
 
+  created () {
+    this.firebaseInit()
+  },
+
   methods: {
+    async firebaseInit () {
+      const rosterDoc = db
+        .collection('rosters')
+        .doc('A3MX0TG0LSaDpvwADjez')
+
+      const doc = await rosterDoc.get()
+      
+      if (!doc.exists) {
+        // create document in Firebase
+        await this.firebaseSeed()
+      }
+
+      await rosterDoc.onSnapshot(snapshot => {
+        this.roster = snapshot.data().items
+      })
+    },
+
+    firebaseSeed () {
+      return db
+        .collection('rosters')
+        .doc('A3MX0TG0LSaDpvwADjez')
+        .set({ items: [...rosterData] })
+    },
+
+    firebaseUpdate () {
+      return db
+        .collection('rosters')
+        .doc('A3MX0TG0LSaDpvwADjez')
+        .set({ items: this.roster })
+    },
+
     emptySchedule () {
       const hours = range(config.schedule.start_time, config.schedule.end_time);
       const days = range(0, 6);
@@ -382,7 +420,7 @@ export default {
             
             const startTime = this.parseTime(hoursArr[0], false)
             const endTime = this.parseTime(hoursArr[1], true)
-            const hours = range(startTime, endTime)// => 8, 9 , 10, 11, 12, 1
+            const hours = range(startTime, endTime)
 
             let totalHours = hours.length
 
