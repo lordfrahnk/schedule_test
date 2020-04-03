@@ -1,7 +1,7 @@
 <template>
   <div class="flex h-full">
     <div class="w-1/4 overflow-scroll h-full border-r-8 border-gray-200 bg-white">
-      <div class="bg-white pt-8 p-2">
+      <div class="bg-white pt-4 p-2">
         <div class="text-xl text-gray-900">Roster</div>
       </div>
       <div>
@@ -62,11 +62,17 @@
         </div>
       </div>
     </div>
-    <div class="w-3/4 p-8">
-      <div class="bg-white">
+    <div class="w-3/4 p-4">
+      <div class="bg-white flex items-center justify-between mb-2">
         <div class="text-xl text-gray-900">Schedule</div>
-        <button @click="firebaseSeed">Seed</button>
-        <button @click="firebaseUpdate">Save</button>
+        <div>
+        <button
+          class="bg-white border px-2 py-1 mr-2 font-semibold rounded-md shadow-sm text-xs text-gray-800" 
+          @click="firebaseSeed">Seed</button>
+        <button 
+          class="bg-white border px-2 py-1 font-semibold rounded-md shadow-sm text-xs text-gray-800" 
+          @click="firebaseUpdate">Save</button>
+          </div>
       </div>
       <!-- <div class="text-gray-900">Schedule</div>
       <div class="mt-10">
